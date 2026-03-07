@@ -1,7 +1,6 @@
-// src/features/shuffle/jobTypes.ts
+import type { shuffleSource as ShuffleSource, UriFetchProgress } from "./types";
 
-import type { ShuffleSource, UriFetchProgress } from "./types";
-
+// Define the possible stages a shuffle job can be in.
 export type ShuffleJobStage =
   | "init"
   | "fetching_uris"
@@ -10,6 +9,10 @@ export type ShuffleJobStage =
   | "adding_items"
   | "done";
 
+// Union type describing the progress of a shuffle job. Each stage carries the
+// data relevant for that phase of the workflow. Note that playlist identifiers
+// and URLs use `playListId` and `playListUrl` to match the naming in
+// `shuffleSource` and the rest of the shuffle logic.
 export type ShuffleJobProgress =
   | {
       stage: "init";
@@ -34,8 +37,8 @@ export type ShuffleJobProgress =
   | {
       stage: "adding_items";
       source: ShuffleSource;
-      playlistId: string;
-      playlistUrl?: string;
+      playListId: string;
+      playListUrl?: string;
       added: number;
       total: number;
       batchSize: number;
@@ -45,13 +48,15 @@ export type ShuffleJobProgress =
   | {
       stage: "done";
       source: ShuffleSource;
-      playlistId: string;
-      playlistUrl?: string;
+      playListId: string;
+      playListUrl?: string;
       totalAdded: number;
     };
 
+// The result of a completed shuffle job. Mirrors the "done" stage of
+// ShuffleJobProgress but omits the source.
 export type ShuffleJobResult = {
-  playlistId: string;
-  playlistUrl?: string;
+  playListId: string;
+  playListUrl?: string;
   totalAdded: number;
 };
