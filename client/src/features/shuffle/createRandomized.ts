@@ -11,23 +11,18 @@ import type { ShuffleJobProgress, ShuffleJobResult } from "./jobTypes";
  */
 const MAX_URIS_PER_WRITE = 100;
 
-type CreateRandomizedOptions = {
+export type CreateRandomizedOptions = {
   source: shuffleSource;
-
   // Playlist naming
   name: string;
   description?: string;
   public?: boolean;
-
   // Shuffle behavior
   seed?: string;
-
   // Optional market for fetch consistency
   market?: string;
-
   // Cancellation
   signal?: AbortSignal;
-
   // Progress events
   onProgress?: (p: ShuffleJobProgress) => void;
 };
@@ -106,18 +101,14 @@ export async function createRandomizedPlaylist(opts: CreateRandomizedOptions): P
 
   for (let i = 0; i < batches.length; i++) {
     if (signal?.aborted) throw signal.reason ?? new DOMException("Aborted", "AbortError");
-
     const batch = batches[i];
-
     // Add batch
     await spotifyClient.addPlaylistItems({
       playlistId: playListId,
       uris: batch,
       signal,
     });
-
     added += batch.length;
-
     emit(onProgress, {
       stage: "adding_items",
       source,
@@ -132,6 +123,5 @@ export async function createRandomizedPlaylist(opts: CreateRandomizedOptions): P
   }
 
   emit(onProgress, { stage: "done", source, playListId, playListUrl, totalAdded: added });
-
   return { playListId, playListUrl, totalAdded: added };
 }
